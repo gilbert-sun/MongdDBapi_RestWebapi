@@ -2,6 +2,13 @@
 
 ASP&#x3E;NET Core 3.0/3.1 存取 MongoDB 的 CRUD 範例專案。
 
+### mongo db query cmd
+![img.png](img.png)
+
+### mongo db restful cmd
+![img_1.png](img_1.png)
+
+
 ## 背景資訊
 
 以簡單的 Robot-PET-MongoDBmodel 類別為資料單元做基本 CRUD 的存取示範。
