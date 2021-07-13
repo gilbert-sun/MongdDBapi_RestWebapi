@@ -18,9 +18,9 @@ namespace WebApplication3.Controllers
         private readonly RobotLogModelServices _robotLogModelServices;
         private readonly Call_dbServiceController _callDbServiceController;
 
-        public HomeController(RobotPickModelService robotPickModelService)
+        public HomeController()
         {
-            _robotPickModelService = robotPickModelService;
+            _robotPickModelService = new RobotPickModelService();
             _robotLogModelServices = new RobotLogModelServices();
             _callDbServiceController = new Call_dbServiceController();
         }
@@ -31,7 +31,11 @@ namespace WebApplication3.Controllers
         public ActionResult<List<MongoPickDBmodel>> Get()
         {
             Console.WriteLine("\n--------: HomeController.cs ::--GET--All !\n");
-            return _robotPickModelService.Get();
+            var val = _robotPickModelService.Get();
+            if (null == val)
+                return null;
+            else 
+                return _robotPickModelService.Get();
         }
 
         [HttpGet("robot/log")]
@@ -109,6 +113,69 @@ namespace WebApplication3.Controllers
             return deltaRobot;
         }
 
+        [HttpGet("robot/today")]
+        public ActionResult<MongoLogDBmodel> GetToday()
+        {
+            var deltaRobot = DateTimeOffset.Now;
+            var deltaRobot1 = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            
+            Console.WriteLine("\n--------: LogController.cs ::--GetToday--=[{0} : {1}] !\n ",deltaRobot,deltaRobot1);
+            
+            if (deltaRobot == null)
+            {
+                return NotFound();
+            }
+
+            return  Content(deltaRobot1.ToString()+":"+deltaRobot.ToString());
+        }      
+        
+        
+        [HttpGet("robot/log/durationtime")]
+        public ActionResult<MongoLogDBmodel> GetDurationTime()
+        {
+            var deltaRobot = _robotLogModelServices.GetCamDurationTime();
+            
+            Console.WriteLine("\n--------: LogController.cs ::--getDurationtime--=[{0}] !\n ",deltaRobot);
+            
+            if (deltaRobot == null)
+            {
+                return NotFound();
+            }
+
+            return  Content(deltaRobot.ToString()+":"+TimeSpan.FromMilliseconds(deltaRobot).ToString());
+        } 
+        
+        [HttpGet("robot/log/starttime")]
+        public ActionResult<MongoLogDBmodel> GetStartTime()
+        {
+            var deltaRobot = _robotLogModelServices.GetCamStartTime();
+            
+            Console.WriteLine("\n--------: LogController.cs ::--GetCamSatus--=[{0}] !\n ",deltaRobot);
+            
+            if (deltaRobot == null)
+            {
+                return NotFound();
+            }
+
+            return  Content(deltaRobot.ToString()+":"+DateTimeOffset.FromUnixTimeMilliseconds(deltaRobot).ToLocalTime().ToString());
+        } 
+        
+        [HttpGet("robot/log/status")]
+        public ActionResult<MongoLogDBmodel> GetStatus()
+        {
+            var deltaRobot = _robotLogModelServices.GetCamSatus();
+            
+            Console.WriteLine("\n--------: LogController.cs ::--GetCamSatus--=[{0}] !\n ",deltaRobot);
+            
+            if (deltaRobot == null)
+            {
+                return NotFound();
+            }
+
+            return  Content(deltaRobot);
+        }    
+        
+        
         [HttpPost]
         [HttpPost("robot/arm")]
         public ActionResult<MongoPickDBmodel> Create(MongoPickDBmodel robotModel1)

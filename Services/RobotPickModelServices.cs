@@ -2,7 +2,9 @@
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using MongoDB.Bson;
 using WebApplication3.Models;
 
 namespace WebApplication3.Services
@@ -78,7 +80,9 @@ namespace WebApplication3.Services
         //R
         public List<MongoPickDBmodel> Get()
         {
-            return collection1S.Find(model1 => true).ToList();
+            //return collection1S.Find(model1 => true).ToList();
+            var model1 = Builders<MongoPickDBmodel>.Filter.Gte("Datetimetag", 1625396777150);
+            return collection1S.Find(x=>x.Datetimetag <  0).ToList();
         }
         //R:Read I
         public MongoPickDBmodel Get(long timetag)

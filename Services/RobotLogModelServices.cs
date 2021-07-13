@@ -24,8 +24,8 @@ namespace WebApplication3.Services
         public RobotLogModelServices()
         {
             var client = new MongoClient("mongodb://localhost:27017");//settings.ConnectionString);
-            var database = client.GetDatabase("mongoDBrobot1");//settings.DatabaseName);
-            collection2S = database.GetCollection<MongoLogDBmodel>("robot1logdb");//settings.DeltaRobotCollectionName);
+            var database = client.GetDatabase("mongoDBrobot4");//settings.DatabaseName);mongoDBrobot1
+            collection2S = database.GetCollection<MongoLogDBmodel>("robot1logdb4");//settings.DeltaRobotCollectionName); robot1logdb
             Console.WriteLine("\n--------Hi---------: DeltaRobotLogModelServices-Log-DbServices.cs : !!\n");//" 1:{0}, 2:{1}, 3:{2}", settings.DatabaseName, settings.ConnectionString,settings.DeltaRobotCollectionName);
         }
         
@@ -58,6 +58,41 @@ namespace WebApplication3.Services
             return collection2S.Find( model1=> true).ToList(); 
         }
         
+        public long GetCamStartTime()
+        {
+            var todayTimeTag=((DateTimeOffset) DateTime.Today).ToUnixTimeMilliseconds();
+            var startTimetag = collection2S.Find(x=>x.Datetimetag > todayTimeTag).Limit(1).ToList();
+            
+            Console.WriteLine("\n--------: Robot_LogModelServices.cs ::--GetCamDurationTime {0} !!\n",startTimetag[0].Datetimetag );
+            
+            if (startTimetag[0].Datetimetag > todayTimeTag)
+                return startTimetag[0].Datetimetag;  
+            return 0;
+        }
+        
+        public long GetCamDurationTime()
+        {
+            var todayTimeTag=((DateTimeOffset) DateTime.Today).ToUnixTimeMilliseconds();
+            var timetag = collection2S.Find(x => x.Datetimetag > todayTimeTag);
+            var startTimetag = timetag.Limit(1).ToList();
+            var currTimetag= timetag.SortByDescending(x => x.Id).Limit(1).ToList();
+            var durationTime = currTimetag[0].Datetimetag - startTimetag[0].Datetimetag;
+            
+            Console.WriteLine("\n--------: Robot_LogModelServices.cs ::--curTime :{0} : startTime:{1} !!\n",currTimetag[0].Timestamp ,startTimetag[0].Timestamp);
+            if (startTimetag[0].Datetimetag > todayTimeTag && durationTime > 0)
+                return durationTime;  
+            return 0;
+        }
+        
+        
+        public string GetCamSatus()
+        {
+            var todayTimeTag=((DateTimeOffset) DateTime.Today).ToUnixTimeSeconds();
+            var nowCamStatusList = collection2S.Find(model1 => true).SortByDescending(e => e.Id).Limit(1).ToList();
+            if (nowCamStatusList[0].Datetimetag >= todayTimeTag)
+                return nowCamStatusList[0].Status;
+            return null;
+        }        
         //R:Read I
         public MongoLogDBmodel Get(long timetag)
         {

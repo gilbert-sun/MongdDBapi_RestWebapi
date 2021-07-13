@@ -195,3 +195,10 @@ DeleteResult result = collection.DeleteOne(filter);
 2. [C# 搭配 MongoDB 的連線寫法](https://blog.yowko.com/mongodb-connectionstring/)
 3. [Update all properties of object in MongoDb](https://stackoverflow.com/questions/30893012/update-all-properties-of-object-in-mongodb)
 4. [Docker版MongoDB的安裝](https://www.jianshu.com/p/2181b2e27021)
+
+```
+docker exec -it (docker container ls --filter name=_charts -q) charts-cli add-user --first-name "gilbert" --last-name "sun" --email "gilbertsun.cs07g@nctu.edu.tw" --password "0932338859a"  --role "UserAdmin"
+docker exec -it `$(docker container ls --filter name=_charts -q) ` charts-cli add-user --first-name "gilbert" --last-name "sun" `--email "gilbertsun.cs07g@nctu.edu.tw" --password "0932338859a" ` --role "UserAdmin"
+
+
+```
